@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
         if (serial.waitForReadyRead(100)) {
             QByteArray data = serial.readAll();
-            ui->plainTextEdit->setPlainText(data);
+            ui->plainTextEdit->appendPlainText(data);
             qDebug() << "Received data:" << data;
             // 在这里处理接收到的数据，可以将其显示在界面上
         }
