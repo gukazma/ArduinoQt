@@ -1,6 +1,6 @@
 set(TARGET_NAME Qt5DemoApp)
 
-find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL SerialPort REQUIRED)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -24,20 +24,21 @@ Qt5::Core
 Qt5::Gui
 Qt5::Widgets
 Qt5::OpenGL
+Qt5::SerialPort 
 )
 
-if(MSVC AND PUBLISH_APP)
-# message("Finding windeployqt")
-# find_program(DEPLOYQT_EXECUTABLE windeployqt)
-# add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-#   COMMAND ${DEPLOYQT_EXECUTABLE} ${CMAKE_BINARY_DIR}/bin/${TARGET_NAME}.exe
-#   COMMENT "Deploying qt dependencies after build..."
-#   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+if(MSVC)
+message("Finding windeployqt")
+find_program(DEPLOYQT_EXECUTABLE windeployqt)
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+  COMMAND ${DEPLOYQT_EXECUTABLE} ${CMAKE_BINARY_DIR}/bin/${TARGET_NAME}.exe
+  COMMENT "Deploying qt dependencies after build..."
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# set_target_properties(${TARGET_NAME} PROPERTIES
+# LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
 # )
-
-set_target_properties(${TARGET_NAME} PROPERTIES
-LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
-)
 endif()
 
 

@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +19,8 @@ public:
     ~MainWindow();
 
 private:
+    QTimer timer;
+    QSerialPort serial;
     Ui::MainWindow *ui;
 };
 
