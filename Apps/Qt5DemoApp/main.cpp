@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     QTranslator* translator = new QTranslator;
     translator->load(":/Translations/zh_CN.qm");
     app.installTranslator(translator);
-
+    
     MainWindow mainwindow;
     mainwindow.show();
 

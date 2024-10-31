@@ -12,6 +12,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    /*QString input = "Light Level: 599 | LED Brightness: 106 | PIR State: 1";
+
+    QStringList numbers;
+    QString number;
+
+    for (int i = 0; i < input.length(); ++i) {
+        if (input.at(i).isDigit()) {
+            number.append(input.at(i));
+        }
+        else if (!number.isEmpty()) {
+            numbers.append(number);
+            number.clear();
+        }
+    }
+
+    if (!number.isEmpty()) {
+        numbers.append(number);
+    }
+    ui->plainTextEdit->appendPlainText(numbers[0]);
+    ui->plainTextEdit->appendPlainText(numbers[1]);
+    ui->plainTextEdit->appendPlainText(numbers[2]);*/
+
     //setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     // 创建Qt3D视图
@@ -57,8 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
     Qt3DCore::QEntity* modelEntity = new Qt3DCore::QEntity(rootEntity);
 
     // 创建一个变换组件
-    Qt3DCore::QTransform* modeltransform = new Qt3DCore::QTransform();
-    modeltransform->setTranslation(QVector3D(0, 0, 3));
+    modeltransform = new Qt3DCore::QTransform();
+    modeltransform->setTranslation(QVector3D(8, 0, 3));
     modeltransform->setRotationY(-90);
     // 加载模型
     Qt3DRender::QMesh* modelMesh = new Qt3DRender::QMesh();
@@ -130,11 +152,6 @@ MainWindow::MainWindow(QWidget *parent) :
                 numbers.append(number);
             }
 
-            if (numbers.size() < 3) {
-                qWarning() << "Not enough numbers found";
-                return 1;
-            }
-
             SensorData sensorData;
             sensorData.lightLevel = numbers[0].toInt();
             sensorData.ledBrightness = numbers[1].toInt();
@@ -155,7 +172,26 @@ MainWindow::MainWindow(QWidget *parent) :
             // 在这里处理接收到的数据，可以将其显示在界面上
         }
         });
+
+    connect(&modeltimer, &QTimer::timeout, [&]() {
+        if (isStop)
+        {
+            auto translation = modeltransform->translation();
+            translation.setX(8);
+            modeltransform->setTranslation(translation);
+        }
+        auto x = modeltransform->translation().x();
+        x -= 20*0.05;
+        auto translation = modeltransform->translation();
+        translation.setX(x);
+        modeltransform->setTranslation(translation);
+        if (x < -5)
+        {
+            isStop = true;
+        }
+        });
     timer.start(1000); // 1秒钟读取一次串口数据
+    modeltimer.start(50); // 1秒钟读取一次串口数据
     /*connect(ui->pushButton, &QPushButton::clicked, [&]() { 
         ui->label->setText("2");
     });
@@ -176,6 +212,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_A)
     {
         qDebug() << "2222";
+        isStop = false;
         intensity+=0.1;
         ui->plainTextEdit->appendPlainText("light:0");
         light->setIntensity(0.1);

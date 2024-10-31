@@ -24,10 +24,14 @@ public:
     Qt3DExtras::Qt3DWindow* view;
     Qt3DRender::QPointLight* light;
 
+
 protected:
     void keyReleaseEvent(QKeyEvent* event) override;
 private:
     QTimer timer;
+    QTimer modeltimer;
+    Qt3DCore::QTransform* modeltransform;
+    bool isStop = true;
     QSerialPort serial;
     Ui::MainWindow *ui;
 };
