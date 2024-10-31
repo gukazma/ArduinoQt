@@ -2,7 +2,11 @@
 #include "ui_MainWindow.h"
 #include <QApplication>
 #include <QDebug>
-
+struct SensorData {
+    int lightLevel;
+    int ledBrightness;
+    int pirState;
+};
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -49,6 +53,25 @@ MainWindow::MainWindow(QWidget *parent) :
     lightEntity->addComponent(lighttransform);
     lightEntity->addComponent(light);
 
+    // 创建实体
+    Qt3DCore::QEntity* modelEntity = new Qt3DCore::QEntity(rootEntity);
+
+    // 创建一个变换组件
+    Qt3DCore::QTransform* modeltransform = new Qt3DCore::QTransform();
+    modeltransform->setTranslation(QVector3D(0, 0, 3));
+    modeltransform->setRotationY(-90);
+    // 加载模型
+    Qt3DRender::QMesh* modelMesh = new Qt3DRender::QMesh();
+    QString exeFullPath = QCoreApplication::applicationDirPath();
+    QString modelPath = exeFullPath + QString::fromLocal8Bit("\\model\\BodyMesh.obj");
+    modelMesh->setSource(QUrl::fromLocalFile(modelPath)); // 替换为你的模型路径
+    modelEntity->addComponent(modelMesh);
+
+    // 创建材质
+    Qt3DExtras::QPhongMaterial* material = new Qt3DExtras::QPhongMaterial();
+    modelEntity->addComponent(material);
+    modelEntity->addComponent(modeltransform);
+
     // 创建一个摄像机
     Qt3DRender::QCamera* camera = view->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
@@ -88,6 +111,46 @@ MainWindow::MainWindow(QWidget *parent) :
         if (serial.waitForReadyRead(100)) {
             QByteArray data = serial.readAll();
             ui->plainTextEdit->appendPlainText(data);
+            QString input = data;
+
+            QStringList numbers;
+            QString number;
+
+            for (int i = 0; i < input.length(); ++i) {
+                if (input.at(i).isDigit()) {
+                    number.append(input.at(i));
+                }
+                else if (!number.isEmpty()) {
+                    numbers.append(number);
+                    number.clear();
+                }
+            }
+
+            if (!number.isEmpty()) {
+                numbers.append(number);
+            }
+
+            if (numbers.size() < 3) {
+                qWarning() << "Not enough numbers found";
+                return 1;
+            }
+
+            SensorData sensorData;
+            sensorData.lightLevel = numbers[0].toInt();
+            sensorData.ledBrightness = numbers[1].toInt();
+            sensorData.pirState = numbers[2].toInt();
+            double intensity = sensorData.ledBrightness;
+            double lightlevel = sensorData.lightLevel;
+            lightlevel /= 1000.0;
+            if (lightlevel > 650)
+            {
+                light->setIntensity(1.0);
+            }
+            else
+            {
+                light->setIntensity(0.1);
+            }
+            view->defaultFrameGraph()->setClearColor(QColor());
             qDebug() << "Received data:" << data;
             // 在这里处理接收到的数据，可以将其显示在界面上
         }
