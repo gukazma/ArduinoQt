@@ -2,17 +2,15 @@
 #include "ui_MainWindow.h"
 #include <QApplication>
 #include <QDebug>
-#include <Qt3DExtras>
-#include <Qt3DCore>
-#include <Qt3DRender>
-#include <Qt3DInput>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     // 创建Qt3D视图
-    Qt3DExtras::Qt3DWindow* view = new Qt3DExtras::Qt3DWindow();
+    view = new Qt3DExtras::Qt3DWindow();
+    view->defaultFrameGraph()->setClearColor(Qt::black);
     QWidget* container = QWidget::createWindowContainer(view);
     container->setMinimumSize(200, 200); // 设置最小大小
     // 创建一个3D场景
@@ -23,8 +21,12 @@ MainWindow::MainWindow(QWidget *parent) :
     sphereMesh->setRadius(1);
 
     // 创建一个材质
-    Qt3DExtras::QPhongMaterial* material = new Qt3DExtras::QPhongMaterial();
-    material->setDiffuse(QColor(QRgb(0x00ff00)));
+    material = new Qt3DExtras::QPhongMaterial();
+    material->setDiffuse(QColor(QRgb(0xbeb32b)));
+    //material->setAmbient(QColor(QRgb(0xbeb32b)));
+    material->setAmbient(QColor(QRgb(0xbeb32b)));
+    material->setSpecular(Qt::white);
+    material->setShininess(50);
 
     // 创建一个变换组件
     Qt3DCore::QTransform* transform = new Qt3DCore::QTransform();
@@ -35,6 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     sphereEntity->addComponent(sphereMesh);
     sphereEntity->addComponent(material);
     sphereEntity->addComponent(transform);
+
+    // 创建一个光源并添加到根实体中
+    light = new Qt3DRender::QPointLight();
+    light->setIntensity(0.8f);  // 设置光源的强度
+    Qt3DCore::QEntity* lightEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DCore::QTransform* lighttransform = new Qt3DCore::QTransform();
+    lighttransform->setTranslation(QVector3D(0, 0, 10));
+    lightEntity->addComponent(lighttransform);
+    lightEntity->addComponent(light);
 
     // 创建一个摄像机
     Qt3DRender::QCamera* camera = view->camera();
