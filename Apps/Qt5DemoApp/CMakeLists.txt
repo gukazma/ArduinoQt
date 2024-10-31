@@ -1,6 +1,6 @@
 set(TARGET_NAME Qt5DemoApp)
 
-find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL SerialPort REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL SerialPort 3DCore 3DExtras 3DRender 3DInput REQUIRED)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -25,6 +25,7 @@ Qt5::Gui
 Qt5::Widgets
 Qt5::OpenGL
 Qt5::SerialPort 
+Qt5::3DCore Qt5::3DExtras Qt5::3DRender Qt5::3DInput
 )
 
 if(MSVC)
