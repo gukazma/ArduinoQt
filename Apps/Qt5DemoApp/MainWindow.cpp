@@ -158,7 +158,6 @@ MainWindow::MainWindow(QWidget *parent) :
             sensorData.pirState = numbers[2].toInt();
             double intensity = sensorData.ledBrightness;
             double lightlevel = sensorData.lightLevel;
-            lightlevel /= 1000.0;
             if (lightlevel > 650)
             {
                 light->setIntensity(1.0);
@@ -166,6 +165,14 @@ MainWindow::MainWindow(QWidget *parent) :
             else
             {
                 light->setIntensity(0.1);
+            }
+            if (sensorData.pirState == 1)
+            {
+                isStop = false;
+            }
+            else
+            {
+                isStop = true;
             }
             view->defaultFrameGraph()->setClearColor(QColor());
             qDebug() << "Received data:" << data;
@@ -188,6 +195,12 @@ MainWindow::MainWindow(QWidget *parent) :
         if (x < -5)
         {
             isStop = true;
+        }
+        if (isStop)
+        {
+            auto translation = modeltransform->translation();
+            translation.setX(8);
+            modeltransform->setTranslation(translation);
         }
         });
     timer.start(1000); // 1秒钟读取一次串口数据
@@ -212,7 +225,6 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_A)
     {
         qDebug() << "2222";
-        isStop = false;
         intensity+=0.1;
         ui->plainTextEdit->appendPlainText("light:0");
         light->setIntensity(0.1);
@@ -223,6 +235,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     {
         qDebug() << "333";
         intensity -= 0.1;
+        isStop = false;
         ui->plainTextEdit->appendPlainText("light:1");
         light->setIntensity(1.0);
     }
