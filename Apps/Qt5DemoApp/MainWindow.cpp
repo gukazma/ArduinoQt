@@ -8,11 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //setMouseTracking(true);
+    setFocusPolicy(Qt::StrongFocus);
     // 创建Qt3D视图
     view = new Qt3DExtras::Qt3DWindow();
     view->defaultFrameGraph()->setClearColor(Qt::black);
     QWidget* container = QWidget::createWindowContainer(view);
-    container->setMinimumSize(200, 200); // 设置最小大小
+    container->setMinimumSize(1024, 600); // 设置最小大小
     // 创建一个3D场景
     Qt3DCore::QEntity* rootEntity = new Qt3DCore::QEntity();
 
@@ -100,4 +102,28 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+// 重写事件过滤器以捕获键盘事件
+void MainWindow::keyReleaseEvent(QKeyEvent* event)
+{
+    qDebug() << "2222";
+    auto intensity = light->intensity();
+    // 按下键盘上的 "+" 键增加灯亮度
+    if (event->key() == Qt::Key_A)
+    {
+        qDebug() << "2222";
+        intensity+=0.1;
+        light->setIntensity(0.1);
+    }
+
+    // 按下键盘上的 "-" 键减小灯亮度
+    if (event->key() == Qt::Key_S)
+    {
+        qDebug() << "333";
+        intensity -= 0.1;
+        light->setIntensity(1.0);
+    }
+
+    QMainWindow::keyReleaseEvent(event);
 }

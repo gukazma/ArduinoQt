@@ -23,6 +23,9 @@ public:
     Qt3DExtras::QPhongMaterial* material;
     Qt3DExtras::Qt3DWindow* view;
     Qt3DRender::QPointLight* light;
+
+protected:
+    void keyReleaseEvent(QKeyEvent* event) override;
 private:
     QTimer timer;
     QSerialPort serial;

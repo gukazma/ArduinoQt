@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     app.installTranslator(translator);
 
     MainWindow mainwindow;
-    mainwindow.showMaximized();
+    mainwindow.show();
 
     splash.finish(&mainwindow);
     return app.exec();
