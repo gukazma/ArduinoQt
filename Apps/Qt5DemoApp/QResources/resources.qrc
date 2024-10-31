@@ -2,5 +2,6 @@
   <qresource prefix="/">
     <file>Translations/zh_CN.qm</file>
     <file>mgukazma.jpg</file>
+    <file>arduino.png</file>
   </qresource>
 </RCC>

@@ -114,6 +114,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     {
         qDebug() << "2222";
         intensity+=0.1;
+        ui->plainTextEdit->appendPlainText("light:0");
         light->setIntensity(0.1);
     }
 
@@ -122,6 +123,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event)
     {
         qDebug() << "333";
         intensity -= 0.1;
+        ui->plainTextEdit->appendPlainText("light:1");
         light->setIntensity(1.0);
     }
 

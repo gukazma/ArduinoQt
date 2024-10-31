@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>显示界面</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -89,7 +89,7 @@
     <item>
      <widget class="QGroupBox" name="groupBox_view">
       <property name="title">
-       <string>串口输出：</string>
+       <string>显示</string>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
      </widget>
