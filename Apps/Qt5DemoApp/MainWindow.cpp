@@ -86,6 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Qt3DRender::QMesh* modelMesh = new Qt3DRender::QMesh();
     QString exeFullPath = QCoreApplication::applicationDirPath();
     QString modelPath = exeFullPath + QString::fromLocal8Bit("\\model\\BodyMesh.obj");
+    QString logPath = exeFullPath + QString::fromLocal8Bit("\\logs\\log.txt");
     modelMesh->setSource(QUrl::fromLocalFile(modelPath)); // 替换为你的模型路径
     modelEntity->addComponent(modelMesh);
 
@@ -127,12 +128,22 @@ MainWindow::MainWindow(QWidget *parent) :
             qDebug() << "Success to open serial port";
         }
       });
-    connect(&timer, &QTimer::timeout, [&]() {
-        qDebug() << "1111";
 
+    // 创建一个 QFile 对象并打开文件
+    QFile file(logPath);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Failed to open file for writing.";
+    }
+
+    // 创建一个 QTextStream 对象，用于写入文件
+    QTextStream out(&file);
+    out << "Arduino Qt Logs :" << Qt::endl;
+    connect(&timer, &QTimer::timeout, [&]() {
         if (serial.waitForReadyRead(100)) {
             QByteArray data = serial.readAll();
             ui->plainTextEdit->appendPlainText(data);
+            out << data << Qt::endl;
             QString input = data;
 
             QStringList numbers;
@@ -157,15 +168,17 @@ MainWindow::MainWindow(QWidget *parent) :
             sensorData.ledBrightness = numbers[1].toInt();
             sensorData.pirState = numbers[2].toInt();
             double intensity = sensorData.ledBrightness;
+            intensity /= 200.0;
             double lightlevel = sensorData.lightLevel;
-            if (lightlevel > 650)
+            light->setIntensity(intensity);
+            /*if (lightlevel > 650)
             {
                 light->setIntensity(1.0);
             }
             else
             {
                 light->setIntensity(0.1);
-            }
+            }*/
             if (sensorData.pirState == 1)
             {
                 isStop = false;
