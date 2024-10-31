@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // 创建一个光源并添加到根实体中
     light = new Qt3DRender::QPointLight();
-    light->setIntensity(0.8f);  // 设置光源的强度
+    light->setIntensity(0.1f);  // 设置光源的强度
     Qt3DCore::QEntity* lightEntity = new Qt3DCore::QEntity(rootEntity);
     Qt3DCore::QTransform* lighttransform = new Qt3DCore::QTransform();
     lighttransform->setTranslation(QVector3D(0, 0, 10));
@@ -219,24 +219,19 @@ MainWindow::~MainWindow()
 // 重写事件过滤器以捕获键盘事件
 void MainWindow::keyReleaseEvent(QKeyEvent* event)
 {
-    qDebug() << "2222";
     auto intensity = light->intensity();
     // 按下键盘上的 "+" 键增加灯亮度
     if (event->key() == Qt::Key_A)
     {
-        qDebug() << "2222";
         intensity+=0.1;
-        ui->plainTextEdit->appendPlainText("light:0");
         light->setIntensity(0.1);
     }
 
     // 按下键盘上的 "-" 键减小灯亮度
     if (event->key() == Qt::Key_S)
     {
-        qDebug() << "333";
         intensity -= 0.1;
         isStop = false;
-        ui->plainTextEdit->appendPlainText("light:1");
         light->setIntensity(1.0);
     }
 
