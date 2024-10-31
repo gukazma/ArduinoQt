@@ -1,4 +1,4 @@
-set(TARGET_NAME Qt5DemoApp)
+set(TARGET_NAME ArduinoInterface)
 
 find_package(Qt5 COMPONENTS Core Widgets Gui OpenGL SerialPort 3DCore 3DExtras 3DRender 3DInput REQUIRED)
 
@@ -37,9 +37,9 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
-# set_target_properties(${TARGET_NAME} PROPERTIES
-# LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
-# )
+set_target_properties(${TARGET_NAME} PROPERTIES
+LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup"
+)
 endif()
 
 

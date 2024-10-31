@@ -7,7 +7,7 @@ int main(int argc, char** argv)
     QApplication  app(argc, argv);
 
 
-    QPixmap       pixmap(QString::fromLocal8Bit(":/mgukazma.jpg"));
+    QPixmap       pixmap(QString::fromLocal8Bit(":/arduino.png"));
     QSplashScreen splash(pixmap);
     splash.show();
 
